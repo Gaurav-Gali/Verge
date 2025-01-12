@@ -1,0 +1,45 @@
+// Types
+1. int
+2. float
+3. string
+4. bool
+5. any
+5. vector
+
+// Basic print
+print("Hello, World!","the grass is green");
+print(`This is a variable ${age}`);
+
+// Variables
+var a:int = 10;
+var b:float = 20.5;
+var c:string = "Hello";
+var d:boolean = true;
+var e:any = "Hello";
+
+// Constants
+const a:int = 10;
+
+// Arrays
+var arr:int[] = [1,2,3,4,5];
+
+// Conditional Statements
+
+
+// Loops
+var i:int = loop(1,10,2) {
+    ...
+}
+
+loop(1,10,2) {
+    ...
+}
+
+loop() {
+    ...
+}
+
+// Functions
+func add(a: int, b:int): int {
+    return a+b;
+}
