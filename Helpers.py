@@ -37,46 +37,73 @@ class Helpers:
             validated_type = None
         
         return validated_type
-    
+
+    @staticmethod
+    def evaluate_expr(expr:str):
+        new_expr:str = ""
+
+        if Helpers.validate_type(expr) == "string":
+            return expr
+        
+        var:str = ""
+        variable_found = False
+        expr += "!"
+        for char in expr:
+            if not variable_found and (char.isdigit() or char in "+-*/%^()<>="):
+                new_expr += char
+            else:
+                variable_found = True
+                if char not in "+-*/%^()<>=!":
+                    var += char
+                else:
+
+                    if var.isdigit():
+                        new_expr += var
+                    elif var.isalnum():
+                        new_expr += str(Helpers.get_variable(var.strip()))
+                    else:
+                        pass
+
+                    if char != "!":
+                        new_expr += char
+                    var = ""
+                    variable_found = False
+        
+        new_expr = eval(str(new_expr))
+        return new_expr
+
     @staticmethod
     def set_variable(var_name, var_type, var_value):
-        new_var = dict()
-        new_var["var_name"] = var_name
+        for var in verge_data.variable_store:
+            if var["var_name"] == var_name:
+                verge_data.error = True
+                Errors.VARIABLE_RE_INIT(var_name)
+                return
 
-        validated_type = Helpers.validate_type(var_value)
+        new_var = {
+            "var_name": var_name,
+            "var_type": var_type,
+            "var_value": var_value
+        }
+
+        if var_type == "boolean":
+            new_var["var_value"] = eval(var_value)
+            verge_data.variable_store.append(new_var)
+            return
+
+
+        # Evaluating the variable value
+        new_var["var_value"] = str(Helpers.evaluate_expr(var_value))
 
         if var_type == "any":
-            new_var["var_type"] = validated_type
-        else:
-            if var_type != validated_type:
-                verge_data.error = True
-                return Errors.INVALID_VARIABLE_TYPE(var_type, validated_type)
-            else:
-                new_var["var_type"] = var_type
+            new_var["var_type"] = str(Helpers.validate_type(str(new_var["var_value"])))
+            # Adding the variable to the store
+            verge_data.variable_store.append(new_var)
+            return
         
-        # Evaluating the variable value
-        if new_var["var_type"] == "string":
-            new_var["var_value"] = str(var_value).strip('"') # Removing ""
-            new_var["var_value"] = str(var_value).strip("'") # Removing ''
-        else:
-            # Calculate variables
-            calculated_value_str = ""
-            retrieved_var_name  = ""
-            for char in var_value:
-                if char.isdigit() or char in "+-*/%^<>=":
-                    if retrieved_var_name != "":
-                        calculated_value_str += str(Helpers.get_variable(retrieved_var_name))
-                        retrieved_var_name = ""
-
-                    calculated_value_str += char
-                else:
-                    retrieved_var_name += char
-            
-            solved_value = eval(calculated_value_str)
-            new_var["var_value"] = solved_value
-
-            # Re assigning types for expressions
-            final_type = Helpers.validate_type(solved_value)
-            new_var["var_type"] = final_type
+        if var_type != Helpers.validate_type(str(new_var["var_value"])):
+            verge_data.error = True
+            Errors.INVALID_VARIABLE_TYPE(var_type, Helpers.validate_type(str(new_var["var_value"])))
+            return
 
         verge_data.variable_store.append(new_var)

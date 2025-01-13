@@ -31,7 +31,7 @@ def run(path:str):
 
         # Interpreting the code
         for line in verge_code:
-            parse_res = Parser.parse(line)
+            Parser.parse(line)
             
             # Check for errors
             if verge_data.error:

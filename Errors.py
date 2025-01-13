@@ -35,3 +35,10 @@ class Errors:
     @staticmethod
     def INVALID_VARIABLE_TYPE(var_type, validated_type):
         console.log(f"[red]Invalid type assignment (Line {verge_data.counter})[/red]\nThe type [underline yellow]{validated_type}[/underline yellow] cannot be assigned to type [underline yellow]{var_type}[/underline yellow].")
+
+    @staticmethod
+    def VARIABLE_RE_INIT(var_name):
+        console.log(f"[red]VARIABLE RE-INITIALIZED (Line {verge_data.counter})[/red]\nThe variable [underline yellow]{var_name}[/underline yellow] cannot be initialized more than once.")
+    @staticmethod
+    def KEYWORD_NOT_FOUND(keyword):
+        console.log(f"[red]KEYWORD NOT FOUND (Line {verge_data.counter})[/red]\nThe keyword [underline yellow]{keyword}[/underline yellow] is not found.")
